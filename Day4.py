@@ -14,10 +14,13 @@ class Elf:
     def __init__(self, Low: int, High: int):
         self.Lower = int(Low)
         self.Higher = int(High)
-        self.areas = range(self.Lower,self.Higher)
+        self.areas = range(self.Lower,self.Higher+1)
     
     def iswithin(self, otherelf):
         return all(area in otherelf.areas for area in self.areas)
+    
+    def hasOverlap(self, otherelf):
+        return any(area in otherelf.areas for area in self.areas)
 
 class Pair:
     def __init__(self, pair: str):
@@ -26,7 +29,10 @@ class Pair:
         self.elf2 = Elf(pairlist[2],pairlist[3])
     
     def hasCompleteOverlap(self):
-        return self.elf1.iswithin(self.elf2) | self.elf2.iswithin(self.elf1)
+        return self.elf1.iswithin(self.elf2) or self.elf2.iswithin(self.elf1)
+    
+    def hasSomeOverlap(self):
+        return self.elf1.hasOverlap(self.elf2)
 
 Pairs = [Pair(pair) for pair in PairsRaw]
 
@@ -34,6 +40,14 @@ Total = 0
 
 for pair in Pairs:
     if pair.hasCompleteOverlap():
+        Total += 1
+
+print(Total)
+
+Total = 0
+
+for pair in Pairs:
+    if pair.hasSomeOverlap():
         Total += 1
 
 print(Total)
